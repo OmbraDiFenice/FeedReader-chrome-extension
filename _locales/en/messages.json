@@ -1,0 +1,26 @@
+{
+	"extensionName": {
+		"message": "My RSS Feed reader",
+		"description": "name of this extension"
+	},
+	
+	"extensionDescription": {
+		"message": "My personal RSS Feed reader",
+		"description": "description for this extension"
+	},
+	
+	"popupDescription": {
+		"message": "My RSS Feed reader",
+		"description": "description tooltip for the popup"
+	},
+
+	"update": {
+		"message": "update feeds",
+		"description": "text of the 'update' button"
+	},
+	
+	"nothing": {
+		"message": "Wait a second!",
+		"description": "message shown if the popup is opened before any feed has been received"
+	}
+}

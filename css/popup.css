@@ -1,0 +1,14 @@
+html {
+	width: 360px;
+}
+
+#feedContainer{
+	white-space: nowrap;
+}
+
+a.feed-item {
+	display: block;
+	margin-top: 7px;
+	text-overflow: ellipsis;
+	overflow-x: hidden;
+}

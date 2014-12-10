@@ -1,0 +1,43 @@
+{
+	// Required
+	"manifest_version": 2,
+	"name": "__MSG_extensionName__",
+	"version": "0.1",
+
+	// Recommended
+	"default_locale": "en",
+	"description": "__MSG_extensionDescription__",
+	"icons": {
+		"16": "images/rss_16x16.png",
+		"48": "images/rss_48x48.png",
+		"128": "images/rss_128x128.png"
+	},
+	
+	"browser_action": {
+		"default_icon": {
+			"19": "images/rss_16x16.png",
+			"38": "images/rss_48x48.png"
+		},
+		"default_title": "__MSG_popupDescription__",
+		"default_popup": "popup.html"
+	},
+	
+	"background": {
+		"scripts": [ "lib/jquery-1.11.1.min.js", "lib/jsapi.js", // libraries
+			"js/utilities.js", // my utilities
+			"js/options/Options.js", "js/options/Feed.js", "js/options/PopupOptions.js", // objects
+			"js/background/updateFeeds.js", "js/background/init.js", "js/background/background.js" // background page management
+		],
+		"persistent": false
+	},
+	
+	"permissions": [
+		"alarms",
+		"storage",
+		"tabs",
+		"https://www.google.com/jsapi",
+		"<all_urls>"
+	],
+	
+	"content_security_policy": "script-src 'self' https://www.google.com; object-src 'self'"
+}

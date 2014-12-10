@@ -1,0 +1,130 @@
+<html>
+<head>
+	<title>test</title>
+	<script src="lib/jquery-1.11.1.min.js"></script>
+	<script src="lib/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="css/jquery-ui.min.css">
+	
+	<script>
+		(function($, undefined) {
+			$.effects.mySlide = function(o) {
+			
+				return this.queue(function() {
+					console.log("myslide");
+					var $this = $(this), 
+						props = [ 'height' ],
+						duration = o.duration || 1000
+					
+					$.effects.save($this, props);
+					$this.css('percent', 0);
+					
+					$this.animate({ percent: 125 }, {
+						queue: false,
+						duration: duration,
+						easing: o.options.easing,
+						step: function(now, fx) {
+							$(fx.elem).css('height', (100 - now) + '%');
+							console.log(now);
+						},
+						complete: function() {
+							
+							$this.css('percent', 0);
+							$.effects.restore($this, props);
+							
+							$this.dequeue();
+							
+							if (o.callback) {
+								o.callback.apply(this, arguments);
+							}
+						}
+					});
+				});
+			};
+		})(jQuery);
+
+	</script>
+	
+	<script>
+		(function($, undefined) {
+
+$.effects.lineargradient = function(o) {
+
+	return this.queue(function() {
+		
+		var $this = $(this), 
+			props = [ 'background-image' ],
+			times = o.options.times || 1,
+			duration = o.duration || 1000,
+			angle = o.options.angle || 0,
+			stops = o.options.stops;
+		
+		$.effects.save($this, props);
+		$this.css('percent', 0);
+		
+		for (var i = 0; i < times; i++) {
+			
+			$this.animate({ percent: 125 }, {
+				queue: false,
+				duration: duration,
+				easing: o.options.easing,
+				step: function(now, fx) {
+					
+					var gradientSpecifier = [ angle.toString() + 'deg, ' ]
+
+					for (var ii = 0, l = stops.length; ii < l; ii++) {
+						
+						if ($.isArray(stops[ii])) {
+							// Color
+							gradientSpecifier.push(stops[ii][0].toString() + ' ');
+							// Position
+							gradientSpecifier.push(String(now + stops[ii][1]) + '%');
+						} else {
+							// Color only
+							gradientSpecifier.push(stops[ii].toString());
+						}
+						
+						if (ii < l - 1) {
+							gradientSpecifier.push(', ');
+						}
+					}
+					
+					gradientSpecifier = gradientSpecifier.join('');
+					
+					$(fx.elem).css('background-image', '-webkit-linear-gradient(' + gradientSpecifier + ')');
+					$(fx.elem).css('background-image', '-moz-linear-gradient(' + gradientSpecifier + ')');
+					$(fx.elem).css('background-image', '-o-linear-gradient(' + gradientSpecifier + ')');
+					$(fx.elem).css('background-image', 'linear-gradient(' + gradientSpecifier + ')');
+				},
+				complete: function() {
+					
+					$this.css('percent', 0);
+					$.effects.restore($this, props);
+					
+					$this.dequeue();
+					
+					if (o.callback) {
+						o.callback.apply(this, arguments);
+					}
+				}
+			});
+		}
+	});
+};
+})(jQuery);
+	</script>
+</head>
+<body>
+	<p id="sec3", style="width: 100px; color: white; background-color: blue">
+	Sed non urna. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor aliquet laoreet, mauris turpis velit, faucibus interdum tellus libero ac justo.
+	</p>
+
+	<input type="button" value="start" onclick="$('#sec3').effect('slide');">
+	<input type="button" value="start" onclick="$('#sec3').effect('lineargradient', {
+				times: 1,
+				duration: 1000,
+				easing: 'linear',
+				angle: 90,
+				stops: [['#FF0000', -50], ['#FFFF00', 0], ['#0000FF', 50]]
+			});">
+</body>
+</html>
