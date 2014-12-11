@@ -60,12 +60,12 @@ function updateFeed(feed, items) {
 				chrome.tabs.create({url: item.link, active: false});
 			});
 		
-		// just highlight the link if already exists, or insert it to the top of the list if it didn't
+		// just highlight the link if already exists, or insert it into the list if it didn't
 		var oldItem = feedContent.find('a[data-feed-link="' + item.link + '"]');
 		if(oldItem.length != 0) {
 			// TODO highlight oldItem
 		} else {
-			feedContent.prepend(link);
+			feedContent.append(link);
 		}
 	});
 }
