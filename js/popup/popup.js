@@ -38,41 +38,84 @@ function createFeedEntries() {
 			$("body, html").height(height);
 		}
 	});
-	
-	contentReady.resolve();
 }
 
-/* This supposes that any item received is a new or updated item
- * and therefore the link should be updated and highlighted
- */
 function updateFeed(feed, items) {
 	var feedContent = $("#" + getHtmlFeedID(feed.ID));
+	var highlightContent = false;
 	
 	$.each(items, function(i, item) {
 		var link = $("<a>")
 			.addClass("feed-item")
-			// TODO add highlight class
-			.attr("href", "javascript:void(0)")
-			.attr("data-feed-link", item.link) // used as identifier below
+			.attr("data-feed-link", item.link)
+			.attr("data-feed-id", feed.ID)
 			.text(item.title)
 			.attr("title", item.contentSnippet)
-			.on("click", function() {
-				chrome.tabs.create({url: item.link, active: false});
-			});
+			.on("click", {'feedID':feed.ID, 'itemLink':item.link}, openFeedItem);
+		
+		if(typeof feed.readItems[item.link] === 'undefined' || dates.compare(new Date(feed.readItems[item.link]), new Date(item.publishedDate)) < 0) {
+			link.addClass("unread");
+			highlightContent = true;
+		}
 		
 		// just highlight the link if already exists, or insert it into the list if it didn't
-		var oldItem = feedContent.find('a[data-feed-link="' + item.link + '"]');
+		var oldItem = feedContent.find('.feed-item[data-feed-link="' + item.link + '"]');
 		if(oldItem.length != 0) {
-			// TODO highlight oldItem
+			if(link.hasClass("unread")) oldItem.addClass("unread");
 		} else {
 			feedContent.append(link);
 		}
 	});
+	
+	if(highlightContent) {
+		feedContent.prev().addClass("contains-unread");
+	}
+}
+
+function openFeedItem(event) {
+	// open link in a new tab
+	// TODO: use options to open it inside the popup (like gmal extension)
+	chrome.tabs.create({url: event.data.itemLink, active: false});
+	
+	// check if this was the last "unread" item
+	if($(this).siblings(".unread").length === 0) {
+		$(this).parent().prev().removeClass("contains-unread");
+	}
+	
+	if($(this).hasClass("unread")) {
+		$(this).removeClass("unread");
+		
+		// update the readItems list
+		for(var i = 0; i < options.Feeds.length; i++) {
+			if(options.Feeds[i].ID === event.data.feedID) {
+				options.Feeds[i].readItems[event.data.itemLink] = $.now();
+				
+				// sort by date and trim to options.Feeds[i].MaxItems
+				var readItemsArray = $.map(options.Feeds[i].readItems, function(date, key) {
+					return { URL: key, date: date }
+				});
+				readItemsArray.sort(function(a, b) {
+					return dates.compare(new Date(a.date), new Date(b.date));
+				});
+				var maxItems = (options.Feeds[i].options) ? options.Feeds[i].options.MaxItems : options.DefaultFeedOptions.MaxItems;
+				readItemsArray = readItemsArray.slice(0, maxItems);
+				var newReadItems = {};
+				$.each(readItemsArray, function(i, val) {
+					newReadItems[val.URL] = val.date;
+				});
+				options.Feeds[i].readItems = newReadItems;
+				break;
+			}
+		}
+		
+		chrome.runtime.sendMessage({ method: "updateOptions", options: options });
+	}
 }
 
 chrome.runtime.sendMessage({ method: "getOptions" }, function(response) {
 	options = response;
 	fillPopup();
+	contentReady.resolve();
 });
 
 chrome.runtime.sendMessage({ method: "updateRequested" });

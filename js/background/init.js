@@ -5,7 +5,7 @@ var googleApiReady = $.Deferred();
 
 function loadOptions() {
 	options = new Options();
-	optionsReady = options.load();
+	optionsReady = load.call(options);
 	optionsReady.done(function() {console.log(options);});
 }
 loadOptions();
@@ -21,8 +21,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 		});
 	} else if (message.method == "updateRequested") {
 		optionsReady.done(function() {
-			updateFeeds();
+			updateFeeds(); // TODO: return cached results if requersted by popup opening event
 		});
+	} else if (message.method == "updateOptions") {
+		options = message.options;
+		store.call(options);
 	}
 });
 

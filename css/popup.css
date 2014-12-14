@@ -6,9 +6,27 @@ html {
 	white-space: nowrap;
 }
 
-a.feed-item {
+.feed-item {
 	display: block;
 	margin-top: 7px;
 	text-overflow: ellipsis;
 	overflow-x: hidden;
+	
+	text-decoration: underline;
+}
+
+.feed-item:hover {
+	cursor: pointer;
+}
+
+.contains-unread {
+	color: red;
+}
+.contains-unread.ui-state-hover:not(.ui-accordion-header-active) {
+	color: yellow;
+}
+
+.unread {
+	color: red !important; /* overwrite the browser settings */
+	font-weight: bold;
 }
