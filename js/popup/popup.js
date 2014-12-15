@@ -95,7 +95,7 @@ function openFeedItem(event) {
 					return { URL: key, date: date }
 				});
 				readItemsArray.sort(function(a, b) {
-					return dates.compare(new Date(a.date), new Date(b.date));
+					return dates.compare(new Date(b.date), new Date(a.date));
 				});
 				var maxItems = (options.Feeds[i].options) ? options.Feeds[i].options.MaxItems : options.DefaultFeedOptions.MaxItems;
 				readItemsArray = readItemsArray.slice(0, maxItems);
