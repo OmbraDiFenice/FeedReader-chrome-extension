@@ -86,26 +86,24 @@ function openFeedItem(event) {
 		$(this).removeClass("unread");
 		
 		// update the readItems list
-		for(var i = 0; i < options.Feeds.length; i++) {
-			if(options.Feeds[i].ID === event.data.feedID) {
-				options.Feeds[i].readItems[event.data.itemLink] = $.now();
-				
-				// sort by date and trim to options.Feeds[i].MaxItems
-				var readItemsArray = $.map(options.Feeds[i].readItems, function(date, key) {
-					return { URL: key, date: date }
-				});
-				readItemsArray.sort(function(a, b) {
-					return dates.compare(new Date(b.date), new Date(a.date));
-				});
-				var maxItems = (options.Feeds[i].options) ? options.Feeds[i].options.MaxItems : options.DefaultFeedOptions.MaxItems;
-				readItemsArray = readItemsArray.slice(0, maxItems);
-				var newReadItems = {};
-				$.each(readItemsArray, function(i, val) {
-					newReadItems[val.URL] = val.date;
-				});
-				options.Feeds[i].readItems = newReadItems;
-				break;
-			}
+		var feed = getFeedByID.call(options, event.data.feedID);
+		if(feed !== null) {
+			feed.readItems[event.data.itemLink] = $.now();
+			
+			// sort by date and trim to feed.MaxItems
+			var readItemsArray = $.map(feed.readItems, function(date, key) {
+				return { URL: key, date: date }
+			});
+			readItemsArray.sort(function(a, b) {
+				return dates.compare(new Date(b.date), new Date(a.date));
+			});
+			var maxItems = (feed.options) ? feed.options.MaxItems : options.DefaultFeedOptions.MaxItems;
+			readItemsArray = readItemsArray.slice(0, maxItems);
+			var newReadItems = {};
+			$.each(readItemsArray, function(i, val) {
+				newReadItems[val.URL] = val.date;
+			});
+			feed.readItems = newReadItems;
 		}
 		
 		chrome.runtime.sendMessage({ method: "updateOptions", options: options });

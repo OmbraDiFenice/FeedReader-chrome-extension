@@ -81,14 +81,8 @@ function initUI() {
 		.attr("value", chrome.i18n.getMessage("editFeedButton"))
 		.button("disable")
 		.on("click", function(event) {
-			var feed;
 			var id = $(".list-item-selected").data("feedID");
-			for(var i=0; i < options.Feeds.length; i++){
-				if(options.Feeds[i].ID === id) {
-					feed = options.Feeds[i];
-					break;
-				}
-			}
+			var feed = getFeedByID.call(options, id);
 		
 			$("#feedName").val(feed.Name);
 			$("#feedURL").val(feed.URL);

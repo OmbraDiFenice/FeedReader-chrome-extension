@@ -224,3 +224,13 @@ function load() {
 	
 	return deferred;
 }
+
+function getFeedByID(id) {
+	var options = this;
+	for(var i=0; i < options.Feeds.length; i++){
+		if(options.Feeds[i].ID === id) {
+			return options.Feeds[i];
+		}
+	}
+	return null;
+}
