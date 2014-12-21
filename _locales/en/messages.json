@@ -22,5 +22,60 @@
 	"nothing": {
 		"message": "Wait a second!",
 		"description": "message shown if the popup is opened before any feed has been received"
+	},
+	
+	"feedNameDialog": {
+		"message": "Feed name: ",
+		"description": "label for the feed name in add/edit feed dialog, in settings page"
+	},
+	
+	"feedURLDialog": {
+		"message": "URL: ",
+		"description": "label for the feed URL in add/edit feed dialog, in settings page"
+	},
+	
+	"feedMaxItemsDialog": {
+		"message": "Max items: ",
+		"description": "label for the feed max items in add/edit feed dialog, in settings page"
+	},
+	
+	"dialogClose": {
+		"message": "close",
+		"description": "text related to the exit option of a dialog"
+	},
+	
+	"dialogConfirm": {
+		"message": "Ok",
+		"description": "text of the confirm button in a dialog"
+	},
+	
+	"dialogCancel": {
+		"message": "Cancel",
+		"description": "text of the cancel button in a dialog"
+	},
+	
+	"addNewFeedButton": {
+		"message": "Add new",
+		"description": "text for the 'add new feed' button in settings"
+	},
+	
+	"editFeedButton": {
+		"message": "Edit",
+		"description": "text for the 'edit feed' button in settings"
+	},
+	
+	"deleteFeedButton": {
+		"message": "Delete",
+		"description": "text for the 'delete feed' button in settings"
+	},
+	
+	"newFeedDialogTitle": {
+		"message": "New feed",
+		"description": "title of the 'new feed' dialog box"
+	},
+	
+	"editFeedDialogTitle": {
+		"message": "Edit feed",
+		"description": "title of the 'edit feed' dialog box"
 	}
 }

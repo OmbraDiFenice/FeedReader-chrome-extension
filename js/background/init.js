@@ -1,6 +1,6 @@
 /* Option object */
 var options;
-var optionsReady;
+var optionsReady = $.Deferred();
 var googleApiReady = $.Deferred();
 
 function loadOptions() {
@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 		});
 	} else if (message.method == "updateRequested") {
 		optionsReady.done(function() {
-			updateFeeds(); // TODO: return cached results if requersted by popup opening event
+			updateFeeds(); // TODO: return cached results if requested by "popup opening" event
 		});
 	} else if (message.method == "updateOptions") {
 		options = message.options;

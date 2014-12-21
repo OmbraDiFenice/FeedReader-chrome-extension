@@ -31,6 +31,15 @@
 		"persistent": false
 	},
 	
+	"options_ui": {
+		// Required.
+		"page": "settings.html",
+		// Recommended.
+		"chrome_style": true
+	},
+	
+	"options_page": "settings.html",
+	
 	"permissions": [
 		"alarms",
 		"storage",

@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<script src="lib/jquery-1.11.1.min.js"></script>
+		<script src="lib/jquery-ui.min.js"></script>
+		<link rel="stylesheet" href="css/jquery-ui.min.css">
+		
+		<script src="js/utilities.js"></script>
+		<script src="js/options/Options.js"></script>
+		<script src="js/options/Feed.js"></script>
+		
+		<script src="js/settings/settings.js"></script>
+		<link rel="stylesheet" href="css/settings.css">
+	</head>
+	<body>
+		<div class="center">
+			<h2 class="list-title center-text">Feeds</h3>
+			<div class="list" id="feed-list"></div>
+			<div id="feedManagementButtons">
+				<input type="button" id="addNewFeedButton">
+				<input type="button" id="editFeedButton">
+				<input type="button" id="deleteFeedButton">
+			</div>
+		</div>
+		
+		<div id="feedDialog" class="dialog">
+			<div class="row">
+				<label for="feedName"></label>
+				<input type="text" id="feedName">
+			</div>
+			<div class="row">
+				<label for="feedURL"></label>
+				<input type="text" id="feedURL">
+			</div>
+			<div class="row">
+				<label for="feedMaxItems"></label>
+				<input id="feedMaxItems" readonly>
+			</div>
+		</div>
+	</body>
+</html>

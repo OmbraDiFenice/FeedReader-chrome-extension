@@ -1,0 +1,49 @@
+.center {
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+.center-text {
+	text-align: center;
+}
+
+.list {
+	/*width: 350px;*/
+	/*max-width: 500px;*/
+	min-height: 100px;
+	max-height: 450px;
+	overflow: auto;
+	border: solid 1px;
+	padding: 5px 0;
+}
+
+.list-item {
+	display: block;
+	padding: 0 5px;
+	margin: 0;
+	font-size: larger;
+}
+.list-item:hover {
+	cursor: pointer;
+}
+
+.list-item-selected {
+	background-color: rgb(0, 78, 255);
+	color: white;
+	font-weight: bolder;
+}
+
+.list-title {
+	color: rgb(5, 5, 189);
+	margin: 0;
+	padding: 0;
+	text-shadow: 1px 1px lightgrey;
+}
+
+#feedURL {
+	width: 300px;
+}
+
+.dialog .row {
+	margin: 5px 0;
+}
