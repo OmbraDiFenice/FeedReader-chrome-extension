@@ -73,9 +73,11 @@ function updateFeed(feed, items) {
 }
 
 function openFeedItem(event) {
-	// open link in a new tab
-	// TODO: use options to open it inside the popup (like gmal extension)
-	chrome.tabs.create({url: event.data.itemLink, active: false});
+	if(!event.ctrlKey) {
+		// open link in a new tab
+		// TODO: use options to open it inside the popup (like gmail extension)
+		chrome.tabs.create({url: event.data.itemLink, active: false});
+	}
 	
 	// check if this was the last "unread" item
 	if($(this).siblings(".unread").length === 0) {
