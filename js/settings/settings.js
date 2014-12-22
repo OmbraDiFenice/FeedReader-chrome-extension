@@ -28,7 +28,7 @@ function initSettings() {
 }
 
 function initUI() {
-	$("#feed-list").sortable({
+	$(".list").sortable({
 		//containment: "parent",
 		items: "> .list-item",
 		placeholder: "ui-state-highlight",
@@ -36,7 +36,7 @@ function initUI() {
 		revert: true,
 		update: function(event, ui) {
 			var movedID = ui.item.data("feedID");
-			var newPos = $("#feed-list .list-item").index(ui.item);
+			var newPos = $(this).closest(".list").find(".list-item").index(ui.item);
 			var oldPos = options.Feeds.indexOf(getFeedByID.call(options, movedID)); // TODO: inefficient, read the array twice. Possibly implement a getFeedIndexByID method
 			var movedFeed = options.Feeds.splice(oldPos, 1)[0];
 			options.Feeds.splice(newPos, 0, movedFeed);
