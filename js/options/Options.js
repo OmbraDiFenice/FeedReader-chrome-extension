@@ -234,3 +234,19 @@ function getFeedByID(id) {
 	}
 	return null;
 }
+
+function getUnreadFeedCount() {
+	var unread = 0;
+	
+	$.each(options.Feeds, function(i, feed) {
+		var increment = 0;
+		$.each(result.feed.entries, function(i, item) {
+			if(typeof feed.readItems[item.link] === 'undefined' || dates.compare(new Date(feed.readItems[item.link]), new Date(item.publishedDate)) < 0) {
+				increment = 1;
+			}
+		});
+		unread += increment;
+	});
+	
+	return unread;
+}
