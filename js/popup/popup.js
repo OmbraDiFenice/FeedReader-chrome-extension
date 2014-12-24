@@ -54,6 +54,10 @@ function updateFeed(feed, items) {
 			.on("click", {'feedID':feed.ID, 'itemLink':item.link}, openFeedItem);
 		
 		if(typeof feed.readItems[item.link] === 'undefined' || dates.compare(new Date(feed.readItems[item.link]), new Date(item.publishedDate)) < 0) {
+			console.log("feed.readItems[item.link]:");
+			console.log(feed.readItems[item.link]);
+			console.log("item.publishedDate:");
+			console.log(item.publishedDate);
 			link.addClass("unread");
 			highlightContent = true;
 		}
@@ -108,9 +112,9 @@ function openFeedItem(event) {
 			});
 			feed.readItems = newReadItems;
 		}
-		
-		chrome.runtime.sendMessage({ method: "updateOptions", options: options });
 	}
+	
+	chrome.runtime.sendMessage({ method: "updateOptions", options: options });
 }
 
 chrome.runtime.sendMessage({ method: "getOptions" }, function(response) {
