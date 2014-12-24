@@ -82,6 +82,7 @@ function openFeedItem(event) {
 	// check if this was the last "unread" item
 	if($(this).siblings(".unread").length === 0) {
 		$(this).parent().prev().removeClass("contains-unread");
+		setBadge();
 	}
 	
 	if($(this).hasClass("unread")) {

@@ -13,12 +13,19 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 			response = options;
 		});
 	} else if (message.method == "updateRequested") {
+		message = $.extend({ forceRemote: false }, message);
+	
 		optionsReady.done(function() {
-			updateFeeds(); // TODO: return cached results if requested by "popup opening" event
+			updateFeeds(message.forceRemote); // TODO: return cached results if requested by "popup opening" event
 		});
 	} else if (message.method == "updateOptions") {
+		var reUpdateFeeds = message.options.Feeds.length != options.Feeds.length;
 		options = message.options;
 		store.call(options);
+		
+		if(reUpdateFeeds) { // update feeds from remote sources if the feed list has been modified
+			updateFeeds(true);
+		}
 	}
 	
 	sendResponse(response);

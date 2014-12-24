@@ -77,3 +77,35 @@ function objectDifference(obj1, obj2) {
 	});
 	return diff;
 }
+
+/* Set the badge of the browser action to display the number of feeds containing
+ * unread items. The badge disappears if there are no such feeds.
+ */
+function setBadge() {
+	chrome.storage.local.get("feedCache", function(result) {
+		var feedCache = result.feedCache;
+		
+		var count = 0;
+		$.each(options.Feeds, function(i, feed) {
+			if(typeof feedCache[feed.ID] != "undefined") {
+				var increment = 0;
+				$.each(feedCache[feed.ID], function(i, item) {
+					if(typeof feed.readItems[item.link] === 'undefined' || dates.compare(new Date(feed.readItems[item.link]), new Date(item.publishedDate)) < 0) {
+						increment = 1;
+					}
+				});
+				count += increment;
+			}
+		});
+		
+		count = (count == 0) ? "" : count + "";
+		
+		var currentBadge = "";
+		chrome.browserAction.getBadgeText({}, function(badgeText) {
+			currentBadge = badgeText;
+			if(currentBadge != count) {
+				chrome.browserAction.setBadgeText({ text : count });
+			}
+		});
+	});
+}
