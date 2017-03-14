@@ -6,14 +6,15 @@
 		
 		<script src="js/utilities.js"></script>
 		<script src="js/options/Options.js"></script>
-		<script src="js/options/Feed.js"></script>
+		<script src="js/options/FeedList.js"></script>
 		
 		<script src="js/settings/settings.js"></script>
 		<link rel="stylesheet" href="css/settings.css">
 	</head>
 	<body>
+        <a href="/tests/tests.html" target="_blank">Tests</a><br/>
 		<div class="center">
-			<h2 class="list-title center-text">Feeds</h3>
+			<h2 class="list-title center-text">Feeds</h2>
 			<div class="list" id="feed-list"></div>
 			<div id="feedManagementButtons">
 				<input type="button" id="addNewFeedButton">
@@ -31,10 +32,6 @@
 			<div class="row">
 				<label for="feedURL"></label>
 				<input type="text" id="feedURL">
-			</div>
-			<div class="row">
-				<label for="feedMaxItems"></label>
-				<input id="feedMaxItems" readonly>
 			</div>
 		</div>
 	</body>

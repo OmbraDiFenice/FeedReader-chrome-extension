@@ -19,6 +19,10 @@ html {
 	cursor: pointer;
 }
 
+.ui-accordion-header-active {
+    color: #0073ea; /* same as .ui-state-default */
+}
+
 .contains-unread {
 	color: red;
 }

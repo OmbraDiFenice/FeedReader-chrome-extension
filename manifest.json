@@ -1,10 +1,8 @@
 {
-	// Required
 	"manifest_version": 2,
 	"name": "__MSG_extensionName__",
 	"version": "0.1",
 
-	// Recommended
 	"default_locale": "en",
 	"description": "__MSG_extensionDescription__",
 	"icons": {
@@ -23,21 +21,20 @@
 	},
 	
 	"background": {
-		"scripts": [ "lib/jquery-1.11.1.min.js", "lib/jsapi.js", // libraries
-			"js/utilities.js", // my utilities
-			"js/options/Options.js", "js/options/Feed.js", "js/options/PopupOptions.js", // objects
-			"js/background/updateFeeds.js", "js/background/init.js", "js/background/background.js" // background page management
+		"scripts": [
+			"lib/jquery-1.11.1.min.js", "lib/jsapi.js",
+			"js/utilities.js",
+			"js/options/Options.js", "js/options/FeedList.js", "js/options/Feed.js",
+			"js/background/background.js"
 		],
 		"persistent": false
 	},
-	
+
 	"options_ui": {
-		// Required.
 		"page": "settings.html",
-		// Recommended.
 		"chrome_style": true
 	},
-	
+
 	"options_page": "settings.html",
 	
 	"permissions": [

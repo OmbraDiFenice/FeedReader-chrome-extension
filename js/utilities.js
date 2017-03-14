@@ -1,21 +1,69 @@
-function stripHTML(text) {
-	return text.substring(0, text.indexOf('<'));
-}
-
 function getHtmlFeedID(feedID) {
 	return "feed_" + feedID;
 }
 
-function getFeedIDFromHtml(htmlFeedID) {
-	return htmlFeedID.substring(5);
+/**
+ * Asynchronously load an object from Chrome cloud storage.
+ * @param optionName the name used to store the object in the cloud
+ * @returns {JQueryDeferred<T>} a deferred resolved when the load completes. If rejected, the callback receives the error message
+ */
+function load(optionName) {
+    var temp = $.Deferred();
+    chrome.storage.sync.get(optionName, function(items) {
+        if(chrome.runtime.lastError) {
+            temp.reject("error loading option " + optionName + ", message: " + chrome.runtime.lastError.message);
+        } else {
+            if(items[optionName] !== undefined)
+                temp.resolve(items[optionName]);
+            else
+                temp.resolve({});
+        }
+    });
+    return temp;
+}
+
+/**
+ * Asynchronously stor ean object in Chrome cloud storage.
+ * @param optionName the name used to retrieve the object with load()
+ * @param object the object to store
+ * @returns {JQueryDeferred<T>} a deferred resolved when the store completes. If rejected, the callback receives the error message
+ */
+function store(optionName, object) {
+    var deferred = $.Deferred();
+    var temp = {};
+    temp[optionName] = object;
+    chrome.storage.sync.set(temp, function() {
+        if(chrome.runtime.lastError) {
+            deferred.reject("error storing option " + optionName + ", message: " + chrome.runtime.lastError.message);
+        } else {
+            deferred.resolve();
+        }
+    });
+    return deferred;
 }
 
 // Source: http://stackoverflow.com/questions/497790
 var dates = {
+    /**
+     * Converts the date in d to a date-object. The input can be:
+     *   a date object: returned without modification
+     *  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
+     *   a number     : Interpreted as number of milliseconds
+     *                  since 1 Jan 1970 (a timestamp)
+     *   a string     : Any format supported by the javascript engine, like
+     *                  "YYYY/MM/DD", "MM/DD/YYYY", "Jan 31 2009" etc.
+     *  an object     : Interpreted as an object with year, month and date
+     *                  attributes.  **NOTE** month is 0-11.
+     * @param d {Date|Number[]|Number|string|Object} see above
+     * @param d.year
+     * @param d.month
+     * @param d.date
+     * @returns {Date} the corresponding Date object
+     */
     convert:function(d) {
         // Converts the date in d to a date-object. The input can be:
         //   a date object: returned without modification
-        //  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
+        //   an array     : Interpreted as [year,month,day]. NOTE: month is 0-11.
         //   a number     : Interpreted as number of milliseconds
         //                  since 1 Jan 1970 (a timestamp) 
         //   a string     : Any format supported by the javascript engine, like
@@ -61,7 +109,7 @@ var dates = {
             NaN
         );
     }
-}
+};
 
 /* return an object containing only the differences between the two objects,
  * that is containing only the values of obj2 that are not present or equal
@@ -69,7 +117,7 @@ var dates = {
  * If the two objects are equal return the empty object
  */
 function objectDifference(obj1, obj2) {
-	var diff = {}
+	var diff = {};
 	$.each(obj2, function(key, value) {
 		if(!obj1.key || value !== obj1.key) {
 			diff.key = value;
@@ -78,8 +126,9 @@ function objectDifference(obj1, obj2) {
 	return diff;
 }
 
-/* Set the badge of the browser action to display the number of feeds containing
- * unread items. The badge disappears if there are no such feeds.
+/**
+ * Set the badge of the browser action to display the number of feedList containing
+ * unread items. The badge disappears if there are no such feedList.
  */
 function setBadge() {
 	chrome.storage.local.get("feedCache", function(result) {
@@ -108,4 +157,34 @@ function setBadge() {
 			}
 		});
 	});
+}
+
+function isNewItem(feed, item) {
+    return typeof feed.readItems[item.link] === 'undefined' || dates.compare(new Date(feed.readItems[item.link]), new Date(item.pubDate)) < 0;
+}
+
+function browserActionNotification(options, feedList, shouldPlay) {
+    var feedsWithNewItems = 0;
+    var newItems = 0;
+    $.each(feedList.list, function(id, feed) {
+        var unreadItems = feed.getUnreadItems();
+        if(unreadItems.length != 0) {
+            feedsWithNewItems++;
+            newItems += unreadItems.length;
+        }
+    });
+
+    if(feedsWithNewItems != 0) {
+        if (shouldPlay && options.UI.Notification.AudioNotification) {
+            var audio = new Audio();
+            audio.src = options.UI.Notification.Sound;
+            audio.play();
+        }
+        if (options.UI.Notification.ShowUpdateCounter) {
+            chrome.browserAction.setBadgeText({text: "" + feedsWithNewItems}); // TODO give the choice of what to display in the badge
+        }
+    } else {
+        console.log("no new items fetched");
+        chrome.browserAction.setBadgeText({text: ""});
+    }
 }
