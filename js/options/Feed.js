@@ -5,10 +5,20 @@
  * @property {string} link
  */
 
+var UNREAD = 0;
+var READ = 1;
+
+function getItemId(item) {
+    var parser = document.createElement('a');
+    parser.href = item.link;
+    return parser.pathname + parser.search + parser.hash;
+    //return item.link.match("^" + feed.url + "(.+)$")[1];
+}
+
 /**
  * @typedef {Object} Feed
  * @property {string} Name
- * @property {string} URL
+ * @property {string} url
  * @property {Object.<string, string>} unreadItems
  * @property {Item[]} items
  */
@@ -22,81 +32,94 @@
  */
 function Feed(name, URL) {
 
-    // Feed object
-
     /**
      * @type {Feed}
      */
     var feed = {
-        "name": name,
-        "URL": URL,
-        "unreadItems": {},
-        "items": [],
-
-        /**
-         * Return true if the given item must be considered unread.
-         * It returns true even if the given item has already been marked as read but the pubDate of the argument is more
-         * recent than the date when the item has been marked as read
-         * @param {Item} item
-         * @returns {boolean}
-         * @method
-         */
-         isNewItem: function (item) {
-            return typeof this.unreadItems[item.link] !== 'undefined' || dates.compare(new Date(this.unreadItems[item.link]), new Date(item.pubDate)) > 0;
-        },
-
-        /**
-         * Compute the number of unread item for this feed
-         * @returns {Item[]} the stored unread items
-         * @method
-         */
-        getReadItems: function () {
-            var _this = this;
-            var list = [];
-            $.each(this.items, function (i, item) {
-                if (_this.isNewItem(item)) {
-                    list.push(item);
-                }
-            });
-            return list;
-        },
-
-        /**
-         * Set the read/unread status of the give item
-         * @param {Item} item
-         * @param {boolean} setRead
-         * @method
-         */
-        setItemState: function (item, setRead) {
-            if (setRead) {
-                delete this.unreadItems[item.link];
-            } else {
-                this.unreadItems[item.link] = $.now();
-            }
-        },
-
-        /**
-         * Fetch last items from remote
-         * @param {function} fetchCompleted - function called when the fetch completed successfully. It gets the fetched feed as argument
-         * @param {function} fetchFailed - function called when the fetch fails. It gets the feed as first argument and the error message as second argument
-         * @returns {JQueryXHR}
-         */
-        fetch: function (fetchCompleted, fetchFailed) {
-            var _this = this;
-            return $.getJSON("http://rss2json.com/api.json", {rss_url: this.URL}, function(result) {
-                // TODO save most recent values in cache
-                if(result.status === "ok") {
-                    _this.items = result.items.slice(0, 5); // TODO: use options.MaxItems in place of constant 5
-
-                    $.each(_this.items, function(i, item) {
-                        _this.setItemState(item, !_this.isNewItem(item));
-                    });
-
-                    if($.isFunction(fetchCompleted)) fetchCompleted(_this);
-                } else if($.isFunction(fetchFailed)) fetchFailed(_this, result.errorMessage);
-            });
-        }
+        name: name,
+        url: URL,
+        items: [],
+        unreadItems: [],
+        firstRun: true,
+        errorMessage: undefined
     };
-    
+
+    function open(item) {
+        chrome.tabs.create({url: item.link, active: false});
+        feed.setAsRead(item, true);
+        feed.store();
+    }
+
+    function setAsRead(item, setRead) {
+        var id = getItemId(item);
+        var i = this.unreadItems.indexOf(id);
+        if (setRead) {
+            if (i >= 0) {
+                this.unreadItems.splice(i, 1);
+            }
+            item.state = READ;
+        } else {
+            if (i < 0) {
+                this.unreadItems.push(id);
+            }
+            item.state = UNREAD;
+        }
+    }
+
+    function update() {
+        var d = $.Deferred();
+        var _this = this;
+        this.fetch()
+            .then(function (fetchedItems) {
+                $.each(fetchedItems, function (i, item) {
+                    if (_this.firstRun)
+                        _this.setAsRead(item, false);
+                    else {
+                        _this.setAsRead(item, _this.unreadItems.indexOf(getItemId(item)) < 0);
+                    }
+                });
+                _this.firstRun = false;
+                _this.items = fetchedItems;
+                d.resolve();
+            }, function (message) {
+                _this.errorMessage = message;
+                d.reject(message);
+            });
+        return d;
+    }
+
+    function store() {
+        var storedInfo = $.extend({}, feed);
+        delete storedInfo.items;
+
+        console.log(storedInfo);
+        g_store(this.url, storedInfo);
+
+        return this;
+    }
+
+    function fetch() {
+        var d = $.Deferred();
+        feed.errorMessage = undefined;
+        $.getJSON("http://api.rss2json.com/v1/api.json", {rss_url: feed.url}, function (result) {
+            if (result.status === "ok") {
+                result.items.splice(2);
+                d.resolve(result.items);
+            } else {
+                console.log(result.message);
+                d.reject(result.message);
+            }
+        }).fail(function (data) {
+            d.reject(data);
+        });
+        return d;
+    }
+
+    feed.store = store.bind(feed);
+    feed.update = update.bind(feed);
+    feed.fetch = fetch.bind(feed);
+    feed.setAsRead = setAsRead.bind(feed);
+    feed.open = open.bind(feed);
+
     return feed;
 }

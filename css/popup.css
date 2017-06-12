@@ -8,7 +8,6 @@ html {
 
 .feed-item {
 	display: block;
-	margin-top: 7px;
 	text-overflow: ellipsis;
 	overflow-x: hidden;
 	
@@ -21,6 +20,17 @@ html {
 
 .ui-accordion-header-active {
     color: #0073ea; /* same as .ui-state-default */
+}
+
+.error {
+    font-style: italic;
+    color: red;
+}
+
+.panel-heading .ui-icon {
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 10px;
 }
 
 .contains-unread {

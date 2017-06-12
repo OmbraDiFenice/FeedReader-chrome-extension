@@ -1,37 +1,57 @@
-<html>
+<html ng-app="app" ng-csp>
 	<head>
-		<script src="lib/jquery-1.11.1.min.js"></script>
-		<script src="lib/jquery-ui.min.js"></script>
-		<link rel="stylesheet" href="css/jquery-ui.min.css">
-		
-		<script src="js/utilities.js"></script>
-		<script src="js/options/Options.js"></script>
-		<script src="js/options/FeedList.js"></script>
+        <script src="lib/jquery-1.11.1.min.js"></script>
+        <script src="lib/jquery-ui/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="lib/jquery-ui/jquery-ui.min.css">
+
+        <script src="lib/angular/angular.js"></script>
+        <link rel="stylesheet" href="lib/angular/angular-csp.css">
+        <script src="lib/angular/angular-animate.js"></script>
+        <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.css">
+        <script src="lib/angular/ui-bootstrap-tpls-2.5.0.js"></script>
+
+
+        <script src="js/utilities.js"></script>
+        <script src="js/options/Options.js"></script>
+        <script src="js/options/Feed.js"></script>
+        <script src="js/options/FeedList.js"></script>
+        <link rel="stylesheet" href="css/popup.css">
+
+        <script type="text/javascript" src="app/app.js"></script>
+        <script type="text/javascript" src="app/chromeStorage.js"></script>
+        <script type="text/javascript" src="app/chromeLocale.js"></script>
+        <script src="app/FeedList.js"></script>
+        <script type="text/javascript" src="app/SettingsCtrl.js"></script>
 		
 		<script src="js/settings/settings.js"></script>
 		<link rel="stylesheet" href="css/settings.css">
 	</head>
-	<body>
+	<body ng-controller="SettingsCtrl">
         <a href="/tests/tests.html" target="_blank">Tests</a><br/>
+
 		<div class="center">
 			<h2 class="list-title center-text">Feeds</h2>
-			<div class="list" id="feed-list"></div>
+			<div class="list" id="feed-list">
+                <div ng-repeat="feed in feedList" title="{{feed.url}}" value="{{feed.url}}" class="list-item" ng-class="{'ui-selected': selected === feed}" ng-click="select(feed)">
+                    {{feed.name}}
+                </div>
+            </div>
 			<div id="feedManagementButtons">
-				<input type="button" id="addNewFeedButton">
-				<input type="button" id="editFeedButton">
-				<input type="button" id="deleteFeedButton">
+				<button id="addNewFeedButton" chrome-locale="addNewFeedButton"></button>
+				<button id="editFeedButton" chrome-locale="editFeedButton" ng-disabled="!selected"></button>
+				<button id="deleteFeedButton" ng-click="remove()" chrome-locale="deleteFeedButton">Delete</button>
 			</div>
 		</div>
-		
+
 		<div id="feedDialog" class="dialog">
 			<input type="hidden" id="feedID">
 			<div class="row">
-				<label for="feedName"></label>
-				<input type="text" id="feedName">
+				<label for="feedName" chrome-locale="feedNameDialog"></label>
+				<input type="text" id="feedName" ng-model="selected.name">
 			</div>
 			<div class="row">
-				<label for="feedURL"></label>
-				<input type="text" id="feedURL">
+				<label for="feedURL" chrome-locale="feedURLDialog"></label>
+				<input type="text" id="feedURL" ng-model="selected.url">
 			</div>
 		</div>
 	</body>

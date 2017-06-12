@@ -1,16 +1,40 @@
-<html>
+<html ng-app="app" ng-csp>
 	<head>
 		<script src="lib/jquery-1.11.1.min.js"></script>
-		<script src="lib/jquery-ui.min.js"></script>
-		<link rel="stylesheet" href="css/jquery-ui.min.css">
-		
-		<script src="js/utilities.js"></script>
+        <link rel="stylesheet" href="lib/jquery-ui/jquery-ui.min.css">
+        <script src="lib/angular/angular.js"></script>
+        <link rel="stylesheet" href="lib/angular/angular-csp.css">
+        <script src="lib/angular/angular-animate.js"></script>
+        <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.css">
+        <script src="lib/angular/ui-bootstrap-tpls-2.5.0.js"></script>
+
+
+        <script src="js/utilities.js"></script>
 		<script src="js/options/Options.js"></script>
-		<script src="js/options/FeedList.js"></script>
-		<script src="js/popup/popup.js"></script>
+        <script src="js/options/Feed.js"></script>
+        <script src="js/options/FeedList.js"></script>
 		<link rel="stylesheet" href="css/popup.css">
+
+        <script type="text/javascript" src="app/app.js"></script>
+        <script type="text/javascript" src="app/chromeStorage.js"></script>
+        <script src="app/FeedList.js"></script>
+        <script type="text/javascript" src="app/RssListCtrl.js"></script>
 	</head>
-	<body>
-		<div id="feedContainer"></div>
+	<body ng-controller="RssListCtrl">
+        <div id="feedContainer">
+            <uib-accordion>
+                <div uib-accordion-group class="panel-default" ng-repeat="feed in feedList">
+                    <uib-accordion-heading>
+                        <div ng-class="{'contains-unread': feed.unreadItems.length != 0, 'error': feed.errorMessage}">
+                            <span ng-if="feed.errorMessage" class="ui-icon ui-icon-alert"></span>{{feed.name}}<span ng-if="feed.unreadItems.length != 0 && !feed.errorMessage"> ({{feed.unreadItems.length}})</span>
+                        </div>
+                    </uib-accordion-heading>
+                    <div ng-if="feed.errorMessage" title="{{feed.errorMessage}}" class="error">{{feed.errorMessage}}</div>
+                    <div class="feed-item" ng-if="!feed.errorMessage" ng-repeat="item in feed.items" title="{{item.description}}" ng-class="{unread: item.state == 0, read: item.state == 1}" ng-click="openFeed(feed, item)">{{item.title}}</div>
+                </div>
+            </uib-accordion>
+            <button ng-if="debug" ng-click="check()">check</button>
+            <button ng-if="debug" ng-click="feedList.update()">update</button>
+        </div>
 	</body>
 </html>

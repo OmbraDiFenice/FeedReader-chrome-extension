@@ -82,23 +82,23 @@ function Options() {
     var options = {};
 
     options.load = function() {
-        var ret = $.Deferred();
-        load(chromeOptionName)
+        var d = $.Deferred();
+        g_load(chromeOptionName)
             .done(function(data) {
                 $.extend(options, data, defaultOptions);
                 console.log(chromeOptionName + " load completed");
                 console.log(options);
-                ret.resolve(options);
+                d.resolve(options);
             })
             .fail(function(message) {
                 console.log(message);
-                ret.reject(message);
+                d.reject(message);
             });
-        return ret;
+        return d;
     };
 
     options.store = function() {
-        return store(chromeOptionName, options)
+        return g_store(chromeOptionName, options)
             .done(function() {
                 chrome.runtime.sendMessage({method: "refreshOptions"});
                 console.log(chromeOptionName + " storage completed");

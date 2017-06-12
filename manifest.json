@@ -22,9 +22,10 @@
 	
 	"background": {
 		"scripts": [
-			"lib/jquery-1.11.1.min.js", "lib/jsapi.js",
+			"lib/jquery-1.11.1.min.js", "lib/jsapi.js", "lib/angular/angular.js", "lib/angular/angular-animate.js", "lib/angular/ui-bootstrap-tpls-2.5.0.js",
 			"js/utilities.js",
-			"js/options/Options.js", "js/options/FeedList.js", "js/options/Feed.js",
+			"js/options/Options.js", "js/options/Feed.js",
+            "app/app.js", "app/chromeStorage.js", "app/FeedList.js",
 			"js/background/background.js"
 		],
 		"persistent": false

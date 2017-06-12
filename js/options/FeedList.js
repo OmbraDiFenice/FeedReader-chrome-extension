@@ -13,81 +13,90 @@
  * @constructor
  */
 function FeedList() {
-    const chromeOptionName = "FeedList";
+    var chromeOptionName = "feedList";
+
+    var feedList = [];
 
     /**
-     * @type {number}
-     * @private
+     * Add the given feed to this feed list
+     * @param {Feed} feed
+     * @method
      */
-    var nextID = 1; // TODO fetch and store this separately
+    feedList.add = function(feed) {
+        for(var i = 0; i < feedList.length; i++) {
+            if(feedList[i].url == feed.url) {
+                return false;
+            }
+        }
+        feedList.push(feed);
+        this.store();
+        return true;
+    };
 
     /**
-     * @type {FeedList}
+     * Remove the feed having the given id from this feed list
+     * @param {string} id
+     * @method
      */
-    var feedList = {
-        list: [],
-
-        /**
-         * Add the given feed to this feed list
-         * @param {Feed} feed
-         * @method
-         */
-        add: function(feed) {
-            var id = nextID++;
-            this.list[id] = feed;
-            this.store();
-        },
-
-        /**
-         * Delete the feed having the given id from this feed list
-         * @param {number} id
-         * @method
-         */
-        delete: function(id) {
-            console.log(this.list[id]);
-            delete this.list[id];
-            console.log(this.list[id]);
-            this.store();
+    feedList.remove = function (id) {
+        for(var i = 0; i < feedList.length; i++) {
+            var feed = feedList[i];
+            if(feed.url == id) {
+                feedList.splice(i,1);
+                this.store();
+            }
         }
     };
 
-    feedList.load = function() {
-        var ret = $.Deferred();
-        load(chromeOptionName)
-            .done(function(data) {
-                if(data.list !== undefined) {
-                    feedList.list = data.list;
-                    $.each(feedList.list, setFeedMethods);
-                }
-                if(data.nextID !== undefined) nextID = data.nextID;
-                console.log(chromeOptionName + " load completed");
-                console.log(feedList);
-                console.log(nextID);
-                ret.resolve(feedList);
-            })
-            .fail(function(message) {
-                console.log(message);
-                ret.reject(message);
+    feedList.update = function() {
+        var ds = [];
+        $.each(feedList, function(i, feed) {
+            ds.push(feed.update());
+        });
+        return $.when.apply(feedList, ds);
+    };
+
+    function loadFeed(key) {
+        var d = $.Deferred();
+        g_load(key).done(function(storedInfo) {
+            var feed = Feed(storedInfo.name, storedInfo.url, storedInfo.firstRun);
+            feed.update().done(function() {
+                d.resolve(feed);
             });
-        return ret;
+        });
+        return d;
+    }
+
+    feedList.load = function() {
+        var d = $.Deferred();
+        g_load(chromeOptionName)
+            .done(function(feedIds) {
+                var ds = [];
+                $.each(feedIds, function(i, id) {
+                    ds.push(loadFeed(id).done(function(feed) {
+                        feedList.push(feed);
+                    }));
+                });
+
+                $.when(ds).done(function() {
+                    console.log(chromeOptionName + " load completed");
+                    console.log(feedList);
+                    d.resolve(feedList);
+                });
+            });
+        return d;
     };
 
     feedList.store = function() {
-        // delete the items from the list, they will be retrieved from the remote source
-        var storedList = $.extend(true, {}, feedList.list);
-        $.each(storedList, function(i, feed) {
-            delete feed.items;
+        var feedIds = [];
+        var ds = [];
+        $.each(feedList, function(i, feed) {
+            feedIds.push(feed.url);
+            ds.push(feed.store());
         });
 
-        // store the cleaned feed list
-        return store(chromeOptionName, {"list": storedList, "nextID": nextID})
-            .done(function() {
-                chrome.runtime.sendMessage({method: "refreshFeed"});
-                console.log(chromeOptionName + " storage completed");
-            })
-            .fail(function(message) {
-                console.log(message);
-            });
+        ds.push(g_store(chromeOptionName, feedIds));
+        return $.when.apply(feedList, ds);
     };
 
     return feedList;
