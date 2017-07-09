@@ -78,6 +78,10 @@ function Feed(name, URL) {
                         _this.setAsRead(item, _this.unreadItems.indexOf(getItemId(item)) < 0);
                     }
                 });
+                // remove old unread items that are no longer fetched
+                $.each(_this.unreadItems, function(i, itemId) {
+                    _this.setAsRead({link: itemId}, true);
+                });
                 _this.firstRun = false;
                 _this.items = fetchedItems;
                 d.resolve();
