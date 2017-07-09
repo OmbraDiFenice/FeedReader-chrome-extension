@@ -105,9 +105,9 @@ function Feed(name, URL) {
     function fetch() {
         var d = $.Deferred();
         feed.errorMessage = undefined;
-        $.getJSON("http://api.rss2json.com/v1/api.json", {rss_url: feed.url}, function (result) {
+        $.getJSON("http://api.rss2json.com/v1/api.json", {rss_url: feed.url, api_key: "ummegacfozg98eymvfnznivwdia3y6jcmzq4ghvg"}, function (result) {
             if (result.status === "ok") {
-                result.items.splice(2);
+                //result.items.splice(2);
                 d.resolve(result.items);
             } else {
                 console.log(result.message);
