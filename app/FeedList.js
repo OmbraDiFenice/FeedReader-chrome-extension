@@ -22,7 +22,7 @@ angular.module('app')
 
         /**
          * Remove the feed having the given id from this feed list
-         * @param {string} id
+         * @param {Feed} toBeRemoved
          * @method
          */
         feedList.remove = function (toBeRemoved) {

@@ -1,22 +1,33 @@
 <html ng-app="app" ng-csp>
 	<head>
-		<script src="lib/jquery-1.11.1.min.js"></script>
-        <link rel="stylesheet" href="lib/jquery-ui/jquery-ui.min.css">
-        <script src="lib/angular/angular.js"></script>
-        <link rel="stylesheet" href="lib/angular/angular-csp.css">
-        <script src="lib/angular/angular-animate.js"></script>
-        <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.css">
-        <script src="lib/angular/ui-bootstrap-tpls-2.5.0.js"></script>
+        <!-- jQuery & jQueryUI -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+        <!-- AngularJS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+        <script src="https://code.angularjs.org/angular-aria.js"></script>
+        <script src="https://code.angularjs.org/angular-animate.js"></script>
+
+        <link rel="stylesheet" href="https://code.angularjs.org/angular-csp.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
 
 
+        <!-- Application -->
         <script src="js/utilities.js"></script>
 		<script src="js/options/Options.js"></script>
-        <script src="js/options/Feed.js"></script>
-        <script src="js/options/FeedList.js"></script>
+        <script src="js/Feed.js"></script>
+        <!--<script src="js/options/FeedList.js"></script>-->
 		<link rel="stylesheet" href="css/popup.css">
 
         <script type="text/javascript" src="app/app.js"></script>
         <script type="text/javascript" src="app/chromeStorage.js"></script>
+        <script type="text/javascript" src="app/chromeLocale.js"></script>
         <script src="app/FeedList.js"></script>
         <script type="text/javascript" src="app/RssListCtrl.js"></script>
 	</head>
