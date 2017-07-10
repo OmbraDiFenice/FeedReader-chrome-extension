@@ -77,5 +77,10 @@
 	"editFeedDialogTitle": {
 		"message": "Edit feed",
 		"description": "title of the 'edit feed' dialog box"
-	}
+	},
+
+    "readAllItems": {
+        "message": "Read all",
+        "description": "read all the items in the current feed"
+    }
 }

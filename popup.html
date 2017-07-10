@@ -30,7 +30,14 @@
                         </div>
                     </uib-accordion-heading>
                     <div ng-if="feed.errorMessage" title="{{feed.errorMessage}}" class="error">{{feed.errorMessage}}</div>
-                    <div class="feed-item" ng-if="!feed.errorMessage" ng-repeat="item in feed.items" title="{{item.description}}" ng-class="{unread: item.state == 0, read: item.state == 1}" ng-click="openFeed(feed, item)">{{item.title}}</div>
+                    <div class="feed-item-list-container" ng-if="!feed.errorMessage">
+                        <div class="feed-actions">
+                            <button ng-click="feed.readAll()"><i class="material-icons md-18">done_all</i></button>
+                            <button><i class="material-icons md-18">done</i></button>
+                            <div><md-icon md-svg-icon="icon-home"></md-icon></div>
+                        </div>
+                        <div class="feed-item" ng-repeat="item in feed.items" title="{{item.description}}" ng-class="{unread: item.state == 0, read: item.state == 1}" ng-click="openFeed(feed, item)">{{item.title}}</div>
+                    </div>
                 </div>
             </uib-accordion>
             <button ng-if="debug" ng-click="check()">check</button>
