@@ -22,7 +22,10 @@
 	
 	"background": {
 		"scripts": [
-			"lib/jsapi.js",
+            "bower_components/angular/angular.min.js",
+            "bower_components/angular-bootstrap/ui-bootstrap.min.js",
+            "bower_components/jquery/dist/jquery.min.js",
+            "lib/jsapi.js",
 			"js/utilities.js",
 			"js/options/Options.js", "js/Feed.js",
             "app/app.js", "app/chromeStorage.js", "app/FeedList.js",

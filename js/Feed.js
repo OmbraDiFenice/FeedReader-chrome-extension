@@ -87,8 +87,14 @@ function Feed(name, URL) {
                     }
                 });
                 // remove old unread items that are no longer fetched
-                $.each(_this.unreadItems, function(i, itemId) {
-                    _this.setAsRead({link: itemId}, true);
+                $.each(_this.unreadItems, function(j, itemId) {
+                    var i = 0;
+                    while( i < _this.items.length && getItemId(item) === itemId) {
+                        i++;
+                    }
+                    if(i == _this.items.length) {
+                        _this.setAsRead({link: itemId}, true);
+                    }
                 });
                 _this.firstRun = false;
                 _this.items = fetchedItems;

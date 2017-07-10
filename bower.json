@@ -1,0 +1,17 @@
+{
+  "name": "feed-reader-chrome-extension",
+  "homepage": "https://github.com/OmbraDiFenice/FeedReader-chrome-extension",
+  "authors": [
+    "OmbraDiFenice <stefano.stoduto@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
