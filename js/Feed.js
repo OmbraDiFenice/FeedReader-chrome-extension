@@ -65,6 +65,14 @@ function Feed(name, URL) {
             item.state = UNREAD;
         }
     }
+    
+    function readAll() {
+        var _this = this;
+        $.each(this.items, function(i, item) {
+            _this.setAsRead(item, true);
+        });
+        this.store();
+    }
 
     function update() {
         var d = $.Deferred();
@@ -124,6 +132,7 @@ function Feed(name, URL) {
     feed.fetch = fetch.bind(feed);
     feed.setAsRead = setAsRead.bind(feed);
     feed.open = open.bind(feed);
+    feed.readAll = readAll.bind(feed);
 
     return feed;
 }

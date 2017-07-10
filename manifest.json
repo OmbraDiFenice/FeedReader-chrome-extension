@@ -22,11 +22,11 @@
 	
 	"background": {
 		"scripts": [
-			"lib/jquery-1.11.1.min.js", "lib/jsapi.js", "lib/angular/angular.js", "lib/angular/angular-animate.js", "lib/angular/ui-bootstrap-tpls-2.5.0.js",
+			"lib/jsapi.js",
 			"js/utilities.js",
-			"js/options/Options.js", "js/options/Feed.js",
+			"js/options/Options.js", "js/Feed.js",
             "app/app.js", "app/chromeStorage.js", "app/FeedList.js",
-			"js/background/background.js"
+			"js/background.js"
 		],
 		"persistent": false
 	},
@@ -46,5 +46,5 @@
 		"<all_urls>"
 	],
 	
-	"content_security_policy": "script-src 'self' https://www.google.com; object-src 'self'"
+	"content_security_policy": "script-src 'self' https://ajax.googleapis.com https://code.angularjs.org https://maxcdn.bootstrapcdn.com https://cdnjs.cloudflare.com; object-src 'self'"
 }
