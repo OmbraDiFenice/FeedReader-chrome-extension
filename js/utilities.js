@@ -160,3 +160,10 @@ function browserActionNotification(feedList) {
         }
     })
 }
+
+function itemIn(item, itemSet) {
+    for(var i = 0; i < itemSet.length; i++) {
+        if(item.link === itemSet[i].link) itemSet[i];
+    }
+    return undefined;
+}

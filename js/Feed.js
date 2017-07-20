@@ -40,6 +40,7 @@ function Feed(name, URL) {
         url: URL,
         items: [],
         unreadItems: [],
+        readItems: [],
         firstRun: true,
         errorMessage: undefined
     };
@@ -52,52 +53,67 @@ function Feed(name, URL) {
 
     function setAsRead(item, setRead) {
         var id = getItemId(item);
-        var i = this.unreadItems.indexOf(id);
+        var i = feed.unreadItems.indexOf(id);
+        var j = feed.readItems.indexOf(id);
         if (setRead) {
             if (i >= 0) {
-                this.unreadItems.splice(i, 1);
+                feed.unreadItems.splice(i, 1);
+            }
+            if (j < 0) {
+                feed.readItems.push(id);
             }
             item.state = READ;
         } else {
             if (i < 0) {
-                this.unreadItems.push(id);
+                feed.unreadItems.push(id);
+            }
+            if (j >= 0) {
+                feed.readItems.splice(j, 1);
             }
             item.state = UNREAD;
         }
     }
     
     function readAll() {
-        var _this = this;
-        $.each(this.items, function(i, item) {
+        var _this = feed;
+        $.each(feed.items, function(i, item) {
             _this.setAsRead(item, true);
         });
-        this.store();
+        feed.store();
     }
 
     function update() {
         var d = $.Deferred();
-        var _this = this;
-        this.fetch()
+        var _this = feed;
+        feed.fetch()
             .then(function (fetchedItems) {
                 $.each(fetchedItems, function (i, item) {
                     if (_this.firstRun)
                         _this.setAsRead(item, false);
                     else {
-                        _this.setAsRead(item, _this.unreadItems.indexOf(getItemId(item)) < 0);
+                        _this.setAsRead(item, _this.readItems.indexOf(getItemId(item)) >= 0);
                     }
                 });
-                // remove old unread items that are no longer fetched
-                $.each(_this.unreadItems, function(j, itemId) {
-                    var i = 0;
-                    while( i < _this.items.length && getItemId(item) === itemId) {
-                        i++;
-                    }
-                    if(i == _this.items.length) {
-                        _this.setAsRead({link: itemId}, true);
+
+                // remove old stored items that are no longer fetched
+                var dictFetchedItems = {};
+                angular.forEach(fetchedItems, function (item) {
+                    dictFetchedItems[getItemId(item)] = true;
+                });
+                angular.forEach(_this.unreadItems, function(item, i) {
+                    if(!dictFetchedItems[item]) {
+                        _this.unreadItems.splice(i, 1);
                     }
                 });
+                angular.forEach(_this.readItems, function(item, i) {
+                    if(!dictFetchedItems[item]) {
+                        _this.readItems.splice(i, 1);
+                    }
+                });
+
                 _this.firstRun = false;
                 _this.items = fetchedItems;
+                feed.store();
                 d.resolve();
             }, function (message) {
                 _this.errorMessage = message;
@@ -111,15 +127,15 @@ function Feed(name, URL) {
         delete storedInfo.items;
 
         console.log(storedInfo);
-        g_store(this.url, storedInfo);
+        g_store(feed.url, storedInfo);
 
-        return this;
+        return feed;
     }
 
     function fetch() {
         var d = $.Deferred();
         feed.errorMessage = undefined;
-        $.getJSON("http://api.rss2json.com/v1/api.json", {rss_url: feed.url, api_key: "ummegacfozg98eymvfnznivwdia3y6jcmzq4ghvg"}, function (result) {
+        $.getJSON("http://api.rss2json.com/v1/api.json", {rss_url: feed.url/*, api_key: "ummegacfozg98eymvfnznivwdia3y6jcmzq4ghvg"*/}, function (result) {
             if (result.status === "ok") {
                 //result.items.splice(2);
                 d.resolve(result.items);

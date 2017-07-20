@@ -50,7 +50,8 @@ angular.module('app')
                 var feed = Feed(storedInfo.name, storedInfo.url);
                 feed.firstRun = storedInfo.firstRun;
                 feed.unreadItems = storedInfo.unreadItems;
-                var u =feed.update();
+                feed.readItems = storedInfo.readItems;
+                var u = feed.update();
                 u.always(function() {
                     d.resolve(feed);
                 });
