@@ -16,7 +16,7 @@ angular.module('app')
                 }
             }
             feedList.push(feed);
-            this.store();
+            feedList.store();
             return true;
         };
 

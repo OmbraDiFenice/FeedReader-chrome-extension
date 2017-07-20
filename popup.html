@@ -30,9 +30,12 @@
         <script type="text/javascript" src="app/chromeLocale.js"></script>
         <script src="app/FeedList.js"></script>
         <script type="text/javascript" src="app/RssListCtrl.js"></script>
+        <script type="text/javascript" src="app/DetectedFeedCtrl.js"></script>
 	</head>
-	<body ng-controller="RssListCtrl">
-        <div id="feedContainer">
+	<body>
+        <div id="feedContainer" ng-controller="RssListCtrl">
+            <button ng-if="debug" ng-click="check()">check</button>
+            <button ng-if="debug" ng-click="feedList.update()">update</button>
             <uib-accordion>
                 <div uib-accordion-group class="panel-default" ng-repeat="feed in feedList">
                     <uib-accordion-heading>
@@ -51,8 +54,16 @@
                     </div>
                 </div>
             </uib-accordion>
-            <button ng-if="debug" ng-click="check()">check</button>
-            <button ng-if="debug" ng-click="feedList.update()">update</button>
+            <div id="detectedFeeds" ng-controller="DetectedFeedCtrl">
+                <uib-accordion>
+                    <div uib-accordion-group class="panel-default">
+                        <uib-accordion-heading>
+                            Detected feeds ({{detectedFeeds.length}})
+                        </uib-accordion-heading>
+                        <div ng-repeat="source in detectedFeeds"><a href="#" title="add this feed" ng-click="addDetectedFeed(source)">{{source.title}}</a></div>
+                    </div>
+                </uib-accordion>
+            </div>
         </div>
 	</body>
 </html>
